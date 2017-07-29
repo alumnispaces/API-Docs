@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>API Reference</title>
+    <title>Alumni Spaces API Reference</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -201,7 +201,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
+  <body class="index" data-languages="[&quot;shell&quot;,&quot;php&quot;,&quot;python&quot;,&quot;javascript&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -212,7 +212,7 @@
       <img src="images/logo.png" class="logo" alt="Logo" />
         <div class="lang-selector">
               <a href="#" data-language-name="shell">shell</a>
-              <a href="#" data-language-name="ruby">ruby</a>
+              <a href="#" data-language-name="php">php</a>
               <a href="#" data-language-name="python">python</a>
               <a href="#" data-language-name="javascript">javascript</a>
         </div>
@@ -228,16 +228,21 @@
             <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
           </li>
           <li>
-            <a href="#kittens" class="toc-h1 toc-link" data-title="Kittens">Kittens</a>
+            <a href="#alumni-fund-vault-records" class="toc-h1 toc-link" data-title="Alumni.Fund Vault Records">Alumni.Fund Vault Records</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#get-all-kittens" class="toc-h2 toc-link" data-title="Kittens">Get All Kittens</a>
+                    <a href="#people-and-transactions" class="toc-h2 toc-link" data-title="Alumni.Fund Vault Records">People and Transactions</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#people" class="toc-h1 toc-link" data-title="People">People</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#get-a-person" class="toc-h2 toc-link" data-title="People">Get a Person</a>
                   </li>
                   <li>
-                    <a href="#get-a-specific-kitten" class="toc-h2 toc-link" data-title="Kittens">Get a Specific Kitten</a>
-                  </li>
-                  <li>
-                    <a href="#delete-a-specific-kitten" class="toc-h2 toc-link" data-title="Kittens">Delete a Specific Kitten</a>
+                    <a href="#create-a-person" class="toc-h2 toc-link" data-title="People">Create a Person</a>
                   </li>
               </ul>
           </li>
@@ -246,19 +251,14 @@
           </li>
       </div>
         <ul class="toc-footer">
-            <li><a href='#'>Sign Up for a Developer Key</a></li>
-            <li><a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a></li>
+            <li><a href='mailto:andrew@alumnispaces.com'>Email Andrew for help</a></li>
         </ul>
     </div>
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.</p>
-
-<p>We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
-
-<p>This example API documentation page was created with <a href="https://github.com/tripit/slate">Slate</a>. Feel free to edit it and use it as a base for your own API&#39;s documentation.</p>
+<p>Alumni Spaces maintains two public APIs. The contentAPI for accessing content created by groups and the vaultAPI for accessing transaction data from Alumni.Fund.  At the moment, only vaultAPI is documented.  If you need access to contentAPI, let us know.</p>
 <h1 id='authentication'>Authentication</h1>
 <blockquote>
 <p>To authorize, use this code:</p>
@@ -280,107 +280,407 @@ curl <span class="s2">"api_endpoint_here"</span>
 <p>Make sure to replace <code>meowmeowmeow</code> with your API key.</p>
 </blockquote>
 
-<p>Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our <a href="http://example.com/developers">developer portal</a>.</p>
+<p>To access any Alumni.Fund data, you&#39;ll first need a valid API key from Alumni Spaces - contact our team to be issued a school/user-specific key.</p>
 
-<p>Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:</p>
+<p>There are two methods of authentication for all API requests: basic HTTP authentication and a custom header for your API key.</p>
 
-<p><code>Authorization: meowmeowmeow</code></p>
+<p>For all requests, pass a basic HTTP auth using:</p>
+
+<p><code>username: As9laxE8pKhP4yYZ</code></p>
+
+<p><code>password: wXMV0U5bV1Mcpsv4kCqTgYBJeXzW</code></p>
+
+<p>You will also need to pass a custom header: <code>x-alumnispaces-key</code> with the value of your API key.</p>
+
+<p><code>x-alumnispaces-key: yourapikeystring</code></p>
+
+<p>Any request that does not contain both authentication methods will be rejected.</p>
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code> yourapikeystring </code> with your personal API key. Contact Alumni Spaces to get a key.
 </aside>
-<h1 id='kittens'>Kittens</h1><h2 id='get-all-kittens'>Get All Kittens</h2><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
+<aside class="notice">
+API Keys are limited by scope and verb permissions. Your key will be limited in scope to the records pertinent to your institution and will likely be limited to GET requests only, even though DELETE and PUT requests are documented here. If you feel that you need write access, please discuss with our team.
+</aside>
+<h1 id='alumni-fund-vault-records'>Alumni.Fund Vault Records</h1><h2 id='people-and-transactions'>People and Transactions</h2>
+<p>Alumni.Fund retains two entities: <code>Person</code> and <code>Transaction</code>. In the plural, they are referred to as <code>People</code> and <code>Transactions</code>.</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">kittens</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kr">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'kittn'</span><span class="p">);</span>
+<p>As you might imagine, a <code>Person</code> is the instigator of a <code>Transaction</code>. Each <code>Person</code> has a unique ID which is the only part of their identity that is stored with the <code>Transaction</code> record.  </p>
 
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">kittens</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="nx">get</span><span class="p">();</span>
-</code></pre>
+<p>At the moment, we do not de-duplicate or combine <code>Person</code> records, so <code>Tyrion Lannister</code> might have 5 different <code>Person</code> records to match the 5 transactions he&#39;s conducted. This will change in the future and the schema reflects a future in which People will contain data from multiple transactions.</p>
+<h1 id='people'>People</h1>
 <blockquote>
-<p>The above command returns JSON structured like this:</p>
+<p>Example Person Record</p>
 </blockquote>
-<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fluffums"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calico"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre>
-<p>This endpoint retrieves all kittens.</p>
-<h3 id='http-request'>HTTP Request</h3>
-<p><code>GET http://example.com/api/kittens</code></p>
-<h3 id='query-parameters'>Query Parameters</h3>
+<pre class="highlight plaintext"><code>{
+  "name": {
+    "first": "Tyrion",
+    "last": "Lannister",
+    "_updated": "2015-09-01T17:28:23.781Z"
+  },
+  "addresses": [
+    {
+      "label": "Dorne Vacation Home",
+      "company": "Lannister Family",
+      "validStart": "05.08.1982",
+      "validEnd": "11.11.2009",
+      "addr1": "412 S. Sandsnake Dr.",
+      "addr2": "Penthouse Suite",
+      "city": "Sunspear",
+      "region": "Dorne",
+      "country": "Dorne",
+      "postal": "1"
+    }
+  ],
+  "emails": [
+    {
+      "label": "work",
+      "address": "tlannister@meereen.gov"
+    },
+    {
+      "label": "personal",
+      "address": "tyrionthetall@wmail.com"
+    }
+  ],
+  "organizations": [
+    {
+      "name": "The Iron Throne",
+      "orgType": "Government Body",
+      "startDate": "01.01.1995",
+      "endDate": "01.01.1997",
+      "title": "Hand of the King",
+      "prevTitles": [ "Brother-in-law", "Nuncle" ]
+    }
+  ],
+  "gender": "male",
+  "birthday": "01.01.1971",
+  "twitter": {
+    "username": "the_pImp"
+  },
+  "phones": [
+    {
+      "label": "pager",
+      "number": "1234"
+    },
+    {
+      "label": "mobile",
+      "number": "5678"
+    }
+  ],
+  "urls": [
+    {
+      "label": "Wikipedia",
+      "value": "https://en.wikipedia.org/wiki/Tyrion_Lannister"
+    }
+  ]
+}
+</code></pre>
+<p>A <code>person</code> is a core object in the Alumni.Fund Vault API. A person is exactly that: a warm-blooded human for home we have some amount of data. A person is created when one of the following things occurs:</p>
+
+<ul>
+<li>They perform a transaction through our system, either a purchase or donation</li>
+<li>(future) They RSVP or check in at an event managed by the Alumni Spaces platform</li>
+<li>(future) A member of a local group or national alumni association manually enters some information about this person</li>
+</ul>
+
+<p>People have the following attributes (<strong>bold</strong> indicates top level object element)</p>
+
 <table><thead>
 <tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Description</th>
+<th>Response Parameter</th>
+<th>Definition</th>
+<th>Type</th>
+<th>Example</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>include_cats</td>
-<td>false</td>
-<td>If set to true, the result will also include cats.</td>
+<td><strong>id</strong></td>
+<td>Unique identifier for this person</td>
+<td>string</td>
+<td></td>
 </tr>
 <tr>
-<td>available</td>
-<td>true</td>
-<td>If set to false, the result will include kittens that have already been adopted.</td>
+<td><strong>name</strong></td>
+<td>Object containing Person&#39;s name</td>
+<td>object</td>
+<td></td>
+</tr>
+<tr>
+<td>first</td>
+<td>Person&#39;s first name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>last</td>
+<td>Person&#39;s last name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>creationDate</strong></td>
+<td>Date this Person&#39;s record was first created</td>
+<td>string as ISO8601 Date</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>updateDate</strong></td>
+<td>Date this Person&#39;s record was last updated</td>
+<td>string as ISO8601 Date</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>address</strong></td>
+<td>Array of objects containing address records</td>
+<td>array</td>
+<td>object</td>
+</tr>
+<tr>
+<td>address.label</td>
+<td>Text label for this address record</td>
+<td>string</td>
+<td>&quot;Home&quot;, &quot;Office&quot;,&quot;Summer home&quot;</td>
+</tr>
+<tr>
+<td>address.validStart</td>
+<td>Beginning of date range for which this is/was a valid address</td>
+<td>string as ISO8601 Date</td>
+<td></td>
+</tr>
+<tr>
+<td>address.validEnd</td>
+<td>End of date range for which this is/was a valid address</td>
+<td>string as ISO8601 Date</td>
+<td></td>
+</tr>
+<tr>
+<td>address.addr1</td>
+<td>First line of address</td>
+<td>string</td>
+<td>181 York St</td>
+</tr>
+<tr>
+<td>address.addr2</td>
+<td>Second line of address</td>
+<td>string</td>
+<td>Suite 5B</td>
+</tr>
+<tr>
+<td>address.city</td>
+<td>Town/City name</td>
+<td>string</td>
+<td>Brooklyn</td>
+</tr>
+<tr>
+<td>address.region</td>
+<td>Region/State name</td>
+<td>string</td>
+<td>New York</td>
+</tr>
+<tr>
+<td>address.country</td>
+<td>Country name</td>
+<td>string as ISO 3166-1 Alpha-2 abbreviation</td>
+<td>US</td>
+</tr>
+<tr>
+<td>address.postal</td>
+<td>postal/zipcode</td>
+<td>string</td>
+<td>11201</td>
+</tr>
+<tr>
+<td><strong>facebook</strong></td>
+<td>Object containing identifying info for facebook</td>
+<td>object</td>
+<td></td>
+</tr>
+<tr>
+<td>facebook.identityToken</td>
+<td>Token saved if user has authenticated with the Alumni Spaces Facebook App. <strong>Note:</strong>  Not returned to public apps.</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>facebook.displayName</td>
+<td>Name user has chosen to display on Facebook</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>facebook.ID</td>
+<td>Unique numerical id for facebook profile</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>twitter</strong></td>
+<td>Object containing twitter profile data</td>
+<td>object</td>
+<td></td>
+</tr>
+<tr>
+<td>twitter.username</td>
+<td>Twitter id without @ symbol</td>
+<td>string</td>
+<td>acafourek</td>
+</tr>
+<tr>
+<td><strong>linkedin</strong></td>
+<td>Object containing LinkedIn profile data</td>
+<td>object</td>
+<td></td>
+</tr>
+<tr>
+<td>linkedin.username</td>
+<td>Unique username on LinkedIn</td>
+<td>string</td>
+<td>andrew.cafourek</td>
+</tr>
+<tr>
+<td><strong>email</strong></td>
+<td>Array of objects containing email data</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>email.label</td>
+<td>Text label for email field</td>
+<td>string</td>
+<td>Personal</td>
+</tr>
+<tr>
+<td>email.address</td>
+<td>Email address</td>
+<td>string</td>
+<td>andrew@gmail.com</td>
+</tr>
+<tr>
+<td><strong>phone</strong></td>
+<td>Array of objects containing phone numbers</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>phone.label</td>
+<td>Text label for email field</td>
+<td>string</td>
+<td>Cell</td>
+</tr>
+<tr>
+<td>phone.number</td>
+<td>Phone number, stripped of non numeric characters</td>
+<td>string (intentionally left as string instead of number)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>externalIDs</strong></td>
+<td>Array of objects containing ID values for 3rd party services. Objects follow standard key/value format but could have custom attributes added.</td>
+<td>Array</td>
+<td></td>
+</tr>
+<tr>
+<td>external.:serviceid:</td>
+<td>Contains string with ID for external service. Service is known by the key, standardization of 3rd party services will be available later.</td>
+<td>object</td>
+<td>skype:&quot;acafourek&quot;</td>
+</tr>
+<tr>
+<td><strong>organization</strong></td>
+<td>Array of objects representing employment, volunteer or involvement history</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>organization.name</td>
+<td>Text name of company/organization</td>
+<td>string</td>
+<td>Alumni Spaces</td>
+</tr>
+<tr>
+<td>organization.orgType</td>
+<td>Category of affiliation with this organization. Could be multiple values</td>
+<td>array</td>
+<td>Employer,Volunteer</td>
+</tr>
+<tr>
+<td>organization.startDate</td>
+<td>ISO 8601 date of beginning of affiliation</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>organization.endDate</td>
+<td>ISO 8601 date of end of affiliation</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>organization.title</td>
+<td>Applicable title to describe this person&#39;s role in the organization</td>
+<td>string</td>
+<td>Chief Technical Officer</td>
+</tr>
+<tr>
+<td>organization.prevTitles</td>
+<td>Titles that have previously been assigned to the organization.title value</td>
+<td>array</td>
+<td>Jr. Javascript Developer, Sr. Technical Manager, Director of Engineering</td>
+</tr>
+<tr>
+<td>organization.linkedinID</td>
+<td>LinkedIn ID of this organization</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>urls</strong></td>
+<td>Array of objects in the familiar label/value format</td>
+<td>Array</td>
+<td></td>
+</tr>
+<tr>
+<td>url.label</td>
+<td>Textual label for this url field</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>url.value</td>
+<td>Valid url</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>groups</strong></td>
+<td>Alumni Spaces groups this person is affiliated with</td>
+<td>Object</td>
+<td></td>
+</tr>
+<tr>
+<td>groups.:groupid:</td>
+<td>Key is Group ID in the Alumni Spaces system, Value is readable name</td>
+<td>String</td>
+<td>mizzou_34:&quot;New York Mizzou Alumns&quot;</td>
+</tr>
+<tr>
+<td><strong>gender</strong></td>
+<td>Person&#39;s gender</td>
+<td>String</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>birthday</strong></td>
+<td>ISO 8601 Date of Person&#39;s birthday</td>
+<td>String</td>
+<td></td>
 </tr>
 </tbody></table>
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-<h2 id='get-a-specific-kitten'>Get a Specific Kitten</h2><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">kittens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens/2"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kr">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'kittn'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</code></pre>
-<blockquote>
-<p>The above command returns JSON structured like this:</p>
-</blockquote>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-<p>This endpoint retrieves a specific kitten.</p>
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-<h3 id='http-request-2'>HTTP Request</h3>
-<p><code>GET http://example.com/kittens/&lt;ID&gt;</code></p>
+<h2 id='get-a-person'>Get a Person</h2>
+<p>You can fetch the record of an individual by using a <code>GET</code> request accompanied by the user&#39;s id number.</p>
+<h3 id='http-request'>HTTP Request</h3>
+<p><code>GET https://vault.alumnispaces.com/person/{id}</code></p>
 <h3 id='url-parameters'>URL Parameters</h3>
 <table><thead>
 <tr>
@@ -390,49 +690,23 @@ Remember — a happy kitten is an authenticated kitten!
 </thead><tbody>
 <tr>
 <td>ID</td>
-<td>The ID of the kitten to retrieve</td>
+<td>The ID of the Person to retrieve</td>
 </tr>
 </tbody></table>
-<h2 id='delete-a-specific-kitten'>Delete a Specific Kitten</h2><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
+<h2 id='create-a-person'>Create a Person</h2>
+<p>Creating a person simply requires making a POST to the /person endpoint with JSON-formatted profile data. When successfully created, an ID is returned.</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
+<aside class="notice">
+When POSTing, make sure you have set the `Content-Type` header to `application/json`
+</aside>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">kittens</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens/2"</span>
-  -X DELETE
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kr">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'kittn'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</code></pre>
 <blockquote>
-<p>The above command returns JSON structured like this:</p>
+<p>Response when creating a Person</p>
 </blockquote>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"deleted"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">":("</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-<p>This endpoint retrieves a specific kitten.</p>
-<h3 id='http-request-3'>HTTP Request</h3>
-<p><code>DELETE http://example.com/kittens/&lt;ID&gt;</code></p>
-<h3 id='url-parameters-2'>URL Parameters</h3>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>ID</td>
-<td>The ID of the kitten to delete</td>
-</tr>
-</tbody></table>
-<h1 id='errors'>Errors</h1>
+<pre class="highlight plaintext"><code>    {
+      "_id": "5653b26dd75eafac08185b3e"
+    }
+</code></pre><h1 id='errors'>Errors</h1>
 <aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files...just save them to the `includes` folder and add them to the top of your `index.md`'s frontmatter. Files are included in the order listed.</aside>
 
 <p>The Kittn API uses the following error codes:</p>
@@ -445,35 +719,35 @@ Remember — a happy kitten is an authenticated kitten!
 </thead><tbody>
 <tr>
 <td>400</td>
-<td>Bad Request -- Your request sucks</td>
+<td>Bad Request -- Your request sucks.</td>
 </tr>
 <tr>
 <td>401</td>
-<td>Unauthorized -- Your API key is wrong</td>
+<td>Unauthorized -- Your API key is wrong.</td>
 </tr>
 <tr>
 <td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only</td>
+<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
 </tr>
 <tr>
 <td>404</td>
-<td>Not Found -- The specified kitten could not be found</td>
+<td>Not Found -- The specified kitten could not be found.</td>
 </tr>
 <tr>
 <td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method</td>
+<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
 </tr>
 <tr>
 <td>406</td>
-<td>Not Acceptable -- You requested a format that isn&#39;t json</td>
+<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
 </tr>
 <tr>
 <td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers</td>
+<td>Gone -- The kitten requested has been removed from our servers.</td>
 </tr>
 <tr>
 <td>418</td>
-<td>I&#39;m a teapot</td>
+<td>I&#39;m a teapot.</td>
 </tr>
 <tr>
 <td>429</td>
@@ -493,7 +767,7 @@ Remember — a happy kitten is an authenticated kitten!
       <div class="dark-box">
           <div class="lang-selector">
                 <a href="#" data-language-name="shell">shell</a>
-                <a href="#" data-language-name="ruby">ruby</a>
+                <a href="#" data-language-name="php">php</a>
                 <a href="#" data-language-name="python">python</a>
                 <a href="#" data-language-name="javascript">javascript</a>
           </div>
