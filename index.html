@@ -247,7 +247,18 @@
               </ul>
           </li>
           <li>
-            <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
+            <a href="#transactions" class="toc-h1 toc-link" data-title="Transactions">Transactions</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#what-a-transaction-is-not" class="toc-h2 toc-link" data-title="Transactions">What a transaction is not</a>
+                  </li>
+                  <li>
+                    <a href="#get-a-transaction" class="toc-h2 toc-link" data-title="Transactions">Get a Transaction</a>
+                  </li>
+                  <li>
+                    <a href="#create-a-transaction" class="toc-h2 toc-link" data-title="Transactions">Create a Transaction</a>
+                  </li>
+              </ul>
           </li>
       </div>
         <ul class="toc-footer">
@@ -383,6 +394,8 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <li>(future) They RSVP or check in at an event managed by the Alumni Spaces platform</li>
 <li>(future) A member of a local group or national alumni association manually enters some information about this person</li>
 </ul>
+
+<p><img src="https://files.readme.io/wOOjyUC9T3a0AWqZyJtO_people.jpeg" alt="A person" /></p>
 
 <p>People have the following attributes (<strong>bold</strong> indicates top level object element)</p>
 
@@ -706,63 +719,341 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 <pre class="highlight plaintext"><code>    {
       "_id": "5653b26dd75eafac08185b3e"
     }
-</code></pre><h1 id='errors'>Errors</h1>
-<aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files...just save them to the `includes` folder and add them to the top of your `index.md`'s frontmatter. Files are included in the order listed.</aside>
+</code></pre><h1 id='transactions'>Transactions</h1>
+<blockquote>
+<p>Example Transaction Record</p>
+</blockquote>
+<pre class="highlight plaintext"><code>{
+        "_id": "583dd1d6daaab713f8a7a4d8",
+        "_created": "2016-11-29T19:07:02.905Z",
+        "_updated": "2016-11-29T19:07:16.221Z",
+        "_method_updated": "2016-11-29T19:07:02.905Z",
+        "_contentID_updated": "2016-11-29T19:07:02.905Z",
+        "_asSiteID_updated": "2016-11-29T19:07:02.905Z",
+        "_status_updated": "2016-11-29T19:07:02.905Z",
+        "_taxed_updated": "2016-11-29T19:07:02.905Z",
+        "_currency_updated": "2016-11-29T19:07:02.905Z",
+        "_value_updated": "2016-11-29T19:07:02.905Z",
+        "value": 25,
+        "currency": "USD",
+        "transDate": "2016-11-29T19:07:02.000Z",
+        "person": "583dd1d6dagbe323522",
+        "taxed": true,
+        "status": "disbursed",
+        "asSiteID": "oklahoma_23",
+        "contentID": "oklahoma_23_223",
+        "method": "credit_card",
+        "__v": 0,
+        "note": [
+            "Notes go in this space!"
+        ],
+        "items": [
+            {
+                "_updated": "2016-11-29T19:07:02.905Z",
+                "label": "Lifetime Membership",
+                "price": 25,
+                "_id": "583dd1d6daaab713f8a7a4da"
+            }
+        ],
+        "receipt": {
+            "to": "cafourek@gmail.com",
+            "emailID": "log_66c55cd19a8276a60afde4119b2fd34c-3",
+            "emailService": "Sendwithus",
+            "sent": true,
+            "_updated": "2016-11-29T19:07:16.221Z"
+        },
+        "external": [
+            {
+                "_updated": "2016-11-29T19:07:02.905Z",
+                "key": "braintree",
+                "value": "hdrqf3zg",
+                "_id": "583dd1d6daaab713f8a7a4d9"
+            }
+        ]
+    }
+</code></pre>
+<p>A <code>transaction</code> is a base object in the Alumni.Fund Vault API which describes the attributes of a particular exchange of financial information that has transpired in a 3rd party system.</p>
 
-<p>The Kittn API uses the following error codes:</p>
+<p><img src="https://files.readme.io/BFROEvGKSOm3iABjxNfg_transaction.jpg" alt="Buying stuff" /></p>
+<h3 id='what-a-transaction-is-not'>What a transaction is not</h3>
+<p>Note that this object and its associated methods are for logging and recording, there are no methods to support the actual completion of a financial transaction.  All records are inbound via direct calls or created by webhook. </p>
+
+<p>Transactions have the following attributes (<strong>bold</strong> indicates top level object element)</p>
 
 <table><thead>
 <tr>
-<th>Error Code</th>
-<th>Meaning</th>
+<th>Response Parameter</th>
+<th>Definition</th>
+<th>Type</th>
+<th>Example</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>400</td>
-<td>Bad Request -- Your request sucks.</td>
+<td><strong>id</strong></td>
+<td>Unique identifier for this transaction</td>
+<td>string</td>
+<td>&quot;1234ABCD&quot;</td>
 </tr>
 <tr>
-<td>401</td>
-<td>Unauthorized -- Your API key is wrong.</td>
+<td><strong>type</strong></td>
+<td>Classification of what kind of transaction this is</td>
+<td>string</td>
+<td>Donation, Purchase, Ticket</td>
 </tr>
 <tr>
-<td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
+<td><strong>value</strong></td>
+<td>Currency value of the transaction. Only valid characters are numbers and decimal</td>
+<td>number</td>
+<td>10.00</td>
 </tr>
 <tr>
-<td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
+<td><strong>currency</strong></td>
+<td>ISO 4217 currency code</td>
+<td>string</td>
+<td>USD,GBP</td>
 </tr>
 <tr>
-<td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
+<td><strong>channel</strong></td>
+<td>Channel through which payment was made</td>
+<td>string</td>
+<td>Braintree,Venmo,Square</td>
 </tr>
 <tr>
-<td>406</td>
-<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
+<td><strong>method</strong></td>
+<td>Payment method used</td>
+<td>string</td>
+<td>Credit card, Venmo, Check</td>
 </tr>
 <tr>
-<td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
+<td><strong>physical</strong></td>
+<td>Was transaction completed in-person?</td>
+<td>boolean</td>
+<td>true/false</td>
 </tr>
 <tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
+<td><strong>transDate</strong></td>
+<td>ISO 8601 date of transaction timestamp</td>
+<td>string</td>
+<td>2015-07-05T22:16:18+00:00</td>
 </tr>
 <tr>
-<td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
+<td><strong>person</strong></td>
+<td>Unique ID of person created by or mapped to this transaction (see /people/:id method)</td>
+<td>string</td>
+<td>1234</td>
 </tr>
 <tr>
-<td>500</td>
-<td>Internal Server Error -- We had a problem with our server. Try again later.</td>
+<td><strong>external</strong></td>
+<td>Object containing external IDs affiliated with this transaction. Keys are TBD based on future integrations</td>
+<td>object</td>
+<td></td>
 </tr>
 <tr>
-<td>503</td>
-<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
+<td>external.braintree</td>
+<td>Braintree transaction ID</td>
+<td>string</td>
+<td>1234</td>
+</tr>
+<tr>
+<td>external.shopify</td>
+<td>Shopify transaction ID</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>createdDate</strong></td>
+<td>ISO 8601 timestamp for when record was created</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>modifiedDate</strong></td>
+<td>ISO 8601 timestamp for when record was last altered. Should be updated with each write operation</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>disbursement</strong></td>
+<td>Object containing data about payout of the funds associated with this transaction</td>
+<td>object</td>
+<td></td>
+</tr>
+<tr>
+<td>disbursement.complete</td>
+<td>Indicator for whether funds have been paid out to recipient for this transaction</td>
+<td>boolean</td>
+<td>true/false</td>
+</tr>
+<tr>
+<td>disbursement.recipient</td>
+<td>Client ID for intended recipient of funds</td>
+<td>string</td>
+<td>testnetwork_93</td>
+</tr>
+<tr>
+<td><strong>taxed</strong></td>
+<td>Boolean indicator where false indicates tax exempt status</td>
+<td>boolean</td>
+<td>true/false</td>
+</tr>
+<tr>
+<td><strong>receipt</strong></td>
+<td>Object containing information about customer notification</td>
+<td>object</td>
+<td></td>
+</tr>
+<tr>
+<td>receipt.sent</td>
+<td>Boolean indicator for receipt sent status</td>
+<td>boolean</td>
+<td>true/false</td>
+</tr>
+<tr>
+<td>receipt.emailID</td>
+<td>External mail service ID of receipt email. Mandrill ID, etc</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>receipt.to</td>
+<td>Email address where receipt is to be sent</td>
+<td>string</td>
+<td>tester@gmail.com</td>
+</tr>
+<tr>
+<td><strong>source</strong></td>
+<td>Object containing some basic info about how this transaction was obtained</td>
+<td>object</td>
+<td></td>
+</tr>
+<tr>
+<td>source.channel</td>
+<td>Medium through which customer was obtained</td>
+<td>string</td>
+<td>Facebook, email, event</td>
+</tr>
+<tr>
+<td>source.interface</td>
+<td>Tool the customer interfaced with to process payment</td>
+<td>string</td>
+<td>web, checkin, email</td>
+</tr>
+<tr>
+<td>source.campaign</td>
+<td>Campaign code used in channel</td>
+<td>string</td>
+<td>October_Watch_Party_email3</td>
+</tr>
+<tr>
+<td>source.id</td>
+<td>ID code used in campaign</td>
+<td>string</td>
+<td>12345</td>
+</tr>
+<tr>
+<td><strong>contentID</strong></td>
+<td>Alumni Spaces Content ID affiliated with this transaction</td>
+<td>string</td>
+<td>testnetwork_93_18</td>
+</tr>
+<tr>
+<td><strong>status</strong></td>
+<td>Some payment methods are not completed right away and a transaction is not considered funded and complete until status = settled</td>
+<td>string</td>
+<td>pending/failed/settled</td>
+</tr>
+<tr>
+<td><strong>note</strong></td>
+<td>Array field of text notes that may be affiliated with transaction</td>
+<td>array</td>
+<td></td>
 </tr>
 </tbody></table>
+<h2 id='get-a-transaction'>Get a Transaction</h2>
+<p>You can fetch the record of a transaction by using a <code>GET</code> request accompanied by the transaction ID number.</p>
 
+<blockquote>
+<p>Fetch transaction ID <code>58d7d9187200bc2fbbff77f1</code></p>
+</blockquote>
+<pre class="highlight plaintext"><code>GET https://vault.alumnispaces.com/transaction/58d7d9187200bc2fbbff77f1
+</code></pre>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<pre class="highlight plaintext"><code>{
+    "_id": "58d7d9187200bc2fbbff77f1",
+    "_created": "2017-03-26T15:07:04.808Z",
+    "_updated": "2017-03-26T15:07:22.366Z",
+    "_method_updated": "2017-03-26T15:07:04.808Z",
+    "_contentID_updated": "2017-03-26T15:07:04.808Z",
+    "_asSiteID_updated": "2017-03-26T15:07:04.808Z",
+    "_status_updated": "2017-03-26T15:07:04.808Z",
+    "_taxed_updated": "2017-03-26T15:07:04.808Z",
+    "_currency_updated": "2017-03-26T15:07:04.808Z",
+    "_value_updated": "2017-03-26T15:07:04.808Z",
+    "value": 5,
+    "currency": "USD",
+    "transDate": "2017-03-26T15:07:04.000Z",
+    "person": "58d7d9187200bc2fbbff77ef",
+    "taxed": true,
+    "status": "pending",
+    "asSiteID": "littlestate_30",
+    "contentID": "littlestate_30_25",
+    "method": "credit_card",
+    "__v": 0,
+    "note": [
+        "I have a comment!"
+    ],
+    "items": [
+        {
+            "_updated": "2017-03-26T15:07:04.808Z",
+            "_id": "58d7d9187200bc2fbbff77f3"
+        }
+    ],
+    "receipt": {
+        "to": "cafourek@gmail.com",
+        "emailID": "log_ce4626ff55eb95830039930b67206b6f-3",
+        "emailService": "Sendwithus",
+        "sent": true,
+        "_updated": "2017-03-26T15:07:22.366Z"
+    },
+    "external": [
+        {
+            "_updated": "2017-03-26T15:07:04.808Z",
+            "key": "braintree",
+            "value": "4pth679m",
+            "_id": "58d7d9187200bc2fbbff77f2"
+        }
+    ]
+}
+</code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><code>GET https://vault.alumnispaces.com/transaction/{id}</code></p>
+<h3 id='url-parameters'>URL Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ID</td>
+<td>The ID of the Transaction to retrieve</td>
+</tr>
+</tbody></table>
+<h2 id='create-a-transaction'>Create a Transaction</h2>
+<p>Creating a transaction simply requires making a POST to the /transaction endpoint with JSON-formatted data. When successfully created, an ID is returned.</p>
+
+<aside class="notice">
+When POSTing, make sure you have set the `Content-Type` header to `application/json`
+</aside>
+
+<blockquote>
+<p>Response when creating a Transaction</p>
+</blockquote>
+<pre class="highlight plaintext"><code>    {
+      "_id": "58d7d9187200bc2fbbff77f1"
+    }
+</code></pre>
       </div>
       <div class="dark-box">
           <div class="lang-selector">
