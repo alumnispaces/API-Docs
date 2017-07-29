@@ -58,6 +58,13 @@ vagrant up
 
 You can now see the docs at http://localhost:4567. Whoa! That was fast!
 
+### Troubleshooting.
+If MacOS gives you some gem install errors:
+
+* Make sure you have the [latest Ruby version](https://stackoverflow.com/a/38194139/2395464_), 
+* you've installed the xcode libraries (using `xcode-select --install`) and 
+* if the error is telling you that nokogiri is having problems installing, run this command `bundle config build.nokogiri --use-system-libraries` then try `bundle install`
+
 Now that Slate is all set up on your machine, you'll probably want to learn more about [editing Slate markdown](https://github.com/lord/slate/wiki/Markdown-Syntax), or [how to publish your docs](https://github.com/lord/slate/wiki/Deploying-Slate).
 
 If you'd prefer to use Docker, instructions are available [in the wiki](https://github.com/lord/slate/wiki/Docker).
