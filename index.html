@@ -201,7 +201,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;shell&quot;,&quot;php&quot;,&quot;python&quot;,&quot;javascript&quot;]">
+  <body class="index" data-languages="[&quot;json&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -211,10 +211,7 @@
     <div class="toc-wrapper">
       <img src="images/logo.png" class="logo" alt="Logo" />
         <div class="lang-selector">
-              <a href="#" data-language-name="shell">shell</a>
-              <a href="#" data-language-name="php">php</a>
-              <a href="#" data-language-name="python">python</a>
-              <a href="#" data-language-name="javascript">javascript</a>
+              <a href="#" data-language-name="json">json</a>
         </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -223,15 +220,20 @@
       <div id="toc" class="toc-list-h1">
           <li>
             <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
-          </li>
-          <li>
-            <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
-          </li>
-          <li>
-            <a href="#alumni-fund-vault-records" class="toc-h1 toc-link" data-title="Alumni.Fund Vault Records">Alumni.Fund Vault Records</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#people-and-transactions" class="toc-h2 toc-link" data-title="Alumni.Fund Vault Records">People and Transactions</a>
+                    <a href="#authentication" class="toc-h2 toc-link" data-title="Introduction">Authentication</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#alumni-fund-vault" class="toc-h1 toc-link" data-title="Alumni.Fund Vault">Alumni.Fund Vault</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#entities" class="toc-h2 toc-link" data-title="Alumni.Fund Vault">Entities</a>
+                  </li>
+                  <li>
+                    <a href="#update-timestamps" class="toc-h2 toc-link" data-title="Alumni.Fund Vault">Update Timestamps</a>
                   </li>
               </ul>
           </li>
@@ -258,6 +260,12 @@
                   <li>
                     <a href="#create-a-transaction" class="toc-h2 toc-link" data-title="Transactions">Create a Transaction</a>
                   </li>
+                  <li>
+                    <a href="#update-a-transaction" class="toc-h2 toc-link" data-title="Transactions">Update a Transaction</a>
+                  </li>
+                  <li>
+                    <a href="#querying-transactions" class="toc-h2 toc-link" data-title="Transactions">Querying Transactions</a>
+                  </li>
               </ul>
           </li>
       </div>
@@ -269,62 +277,84 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Alumni Spaces maintains two public APIs. The contentAPI for accessing content created by groups and the vaultAPI for accessing transaction data from Alumni.Fund.  At the moment, only vaultAPI is documented.  If you need access to contentAPI, let us know.</p>
-<h1 id='authentication'>Authentication</h1>
-<blockquote>
-<p>To authorize, use this code:</p>
-</blockquote>
-<pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
+<p>Alumni Spaces maintains two public APIs:</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
+<ul>
+<li><strong>contentAPI</strong> for accessing content created by groups</li>
+<li><strong>vaultAPI</strong> for accessing transaction data from Alumni.Fund.<br></li>
+</ul>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code><span class="c"># With shell, you can just pass the correct header with each request</span>
-curl <span class="s2">"api_endpoint_here"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kr">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'kittn'</span><span class="p">);</span>
+<p>At the moment, only vaultAPI is documented.  If you need access to contentAPI, please let us know.</p>
+<h2 id='authentication'>Authentication</h2>
+<p>To access any Alumni.Fund data, you&#39;ll first need to get two things from our team.</p>
 
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">);</span>
-</code></pre>
-<blockquote>
-<p>Make sure to replace <code>meowmeowmeow</code> with your API key.</p>
-</blockquote>
+<ul>
+<li>HTTP Basic authentication username and password</li>
+<li>A valid API key - it is an alphanumeric string that determines your data access and &quot;verb&quot; permissions. We use this key to determine which institutions you have data right to and if you are allowed to GET, POST, PUT or DELETE. This API key is passed to our API using a custom header: <code>x-alumnispaces-key</code></li>
+</ul>
 
-<p>To access any Alumni.Fund data, you&#39;ll first need a valid API key from Alumni Spaces - contact our team to be issued a school/user-specific key.</p>
-
-<p>There are two methods of authentication for all API requests: basic HTTP authentication and a custom header for your API key.</p>
-
-<p>For all requests, pass a basic HTTP auth using:</p>
-
-<p><code>username: As9laxE8pKhP4yYZ</code></p>
-
-<p><code>password: wXMV0U5bV1Mcpsv4kCqTgYBJeXzW</code></p>
-
-<p>You will also need to pass a custom header: <code>x-alumnispaces-key</code> with the value of your API key.</p>
-
-<p><code>x-alumnispaces-key: yourapikeystring</code></p>
+<p>All requests require the presence of both authentication methods.</p>
 
 <p>Any request that does not contain both authentication methods will be rejected.</p>
 
 <aside class="notice">
-You must replace <code> yourapikeystring </code> with your personal API key. Contact Alumni Spaces to get a key.
+API Keys are limited by scope and verb permissions. Your key will be limited in scope to the records pertinent to your institution and, in most cases, will be limited to GET requests only, even though DELETE and PUT requests are documented here. If you feel that you need write access, please discuss with our team.
 </aside>
+<h1 id='alumni-fund-vault'>Alumni.Fund Vault</h1><h3 id='entities'>Entities</h3>
+<ul>
+<li>Alumni.Fund&#39;s Vault contains two entities: <code>Person</code> and <code>Transaction</code>.</li>
+<li>In the plural, they are referred to as <code>People</code> and <code>Transactions</code>.</li>
+<li>As you might imagine, a <code>Person</code> is the instigator of a <code>Transaction</code>.</li>
+<li>Each <code>Person</code> has a unique ID which is the only part of their identity that is stored with the <code>Transaction</code> record.<br></li>
+</ul>
 
-<aside class="notice">
-API Keys are limited by scope and verb permissions. Your key will be limited in scope to the records pertinent to your institution and will likely be limited to GET requests only, even though DELETE and PUT requests are documented here. If you feel that you need write access, please discuss with our team.
-</aside>
-<h1 id='alumni-fund-vault-records'>Alumni.Fund Vault Records</h1><h2 id='people-and-transactions'>People and Transactions</h2>
-<p>Alumni.Fund retains two entities: <code>Person</code> and <code>Transaction</code>. In the plural, they are referred to as <code>People</code> and <code>Transactions</code>.</p>
+<p>At the moment, we do not de-duplicate or combine <code>Person</code> records, so <code>Tyrion Lannister</code> might have 5 different <code>Person</code> records to match the 5 transactions he&#39;s conducted. This is anticipated to change in the future. <code>Transactions</code> on the other hand, will always represent a single instance where funds are processed.</p>
+<h3 id='update-timestamps'>Update Timestamps</h3>
+<blockquote>
+<p>Example of <code>_updated</code> timestamps for object properties</p>
+</blockquote>
+<pre class="highlight plaintext"><code>"emails": [
+  {
+    "label": "work",
+    "_updated": "2017-08-10T21:58:04.773Z",
+    "address": "tlannister@meereen.gov"
+  },
+  {
+    "label": "personal",
+    "_updated": "2016-07-10T21:58:16.403Z",
+    "address": "tyrionthetall@wmail.com"
+  }
+]
+</code></pre>
+<p>When a record is created for either a <code>Person</code> or a <code>Transaction</code>, we add a <code>_created</code> property to the record which contains as ISO8601 timestamp. If that record is ever updated, we add an <code>_updated</code> property with that timestamp. Almost every record will have an <code>_updated</code> value because it usually takes a few seconds for our code to communicate with the payment processing system or our own internal APIs.</p>
 
-<p>As you might imagine, a <code>Person</code> is the instigator of a <code>Transaction</code>. Each <code>Person</code> has a unique ID which is the only part of their identity that is stored with the <code>Transaction</code> record.  </p>
+<blockquote>
+<p>Example of <code>_updated</code> timestamps for non-object</p>
+</blockquote>
+<pre class="highlight plaintext"><code>"_contentID_updated": "2017-04-07T20:02:13.044Z",
+"_asSiteID_updated": "2017-04-07T20:02:13.044Z",
+"_status_updated": "2017-04-07T20:02:13.044Z",
+"_taxed_updated": "2017-04-07T20:02:13.044Z",
+</code></pre>
+<p>Thinking ahead, it is reasonable to assume that we&#39;ll be updating <code>Person</code> records regularly as the Person perform more transactions, our data is integrated into more systems or we add additional data management features. So, we also maintain a per-property <code>_updated</code> value.</p>
 
-<p>At the moment, we do not de-duplicate or combine <code>Person</code> records, so <code>Tyrion Lannister</code> might have 5 different <code>Person</code> records to match the 5 transactions he&#39;s conducted. This will change in the future and the schema reflects a future in which People will contain data from multiple transactions.</p>
+<p>When a property is updated, you&#39;ll see a timestamp of when that update occurred. If the property is a nested object (like <code>emails</code>), we&#39;ll add the timestamp within that object. If the updated property it is not a nested object, we&#39;ll add the timestamp at the root of the record object using an underscore prefix and the property name. For example: <code>_status_updated:</code> or <code>_disbursement_updated:</code></p>
 <h1 id='people'>People</h1>
 <blockquote>
 <p>Example Person Record</p>
 </blockquote>
 <pre class="highlight plaintext"><code>{
+  "_id": "598cd8a53fw352252b6ffqc",
+  "_created": "2017-08-10T22:05:25.561Z",
+  "_updated": "2017-08-10T22:05:35.253Z",
+  "contentIDs": [
+    "westeros_20_135",
+    "westeros_35_123"
+  ],
+  "asSiteIDs": [
+    "westeros_20",
+    "westeros_35"
+  ],
   "name": {
     "first": "Tyrion",
     "last": "Lannister",
@@ -347,10 +377,12 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
   "emails": [
     {
       "label": "work",
+      "_updated": "2017-08-10T21:58:04.773Z",
       "address": "tlannister@meereen.gov"
     },
     {
       "label": "personal",
+      "_updated": "2016-07-10T21:58:16.403Z",
       "address": "tyrionthetall@wmail.com"
     }
   ],
@@ -364,9 +396,23 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
       "prevTitles": [ "Brother-in-law", "Nuncle" ]
     }
   ],
+  "externalIDs" : [
+    {
+      "_updated": "2017-08-10T22:05:25.561Z",
+      "key": "braintree",
+      "value": null,
+      "_id": "5953432579ger6b624g3d"
+    },
+    {
+      "_updated": "2017-07-11T12:35:15.561Z",
+      "key": "yourExternalDB",
+      "value": "lannister_t",
+      "_id": "09998122j"
+    }
+  ],
   "gender": "male",
   "birthday": "01.01.1971",
-  "twitter": {
+  "Twitter": {
     "username": "the_pImp"
   },
   "phones": [
@@ -408,9 +454,21 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 </tr>
 </thead><tbody>
 <tr>
-<td><strong>id</strong></td>
+<td><strong>_id</strong></td>
 <td>Unique identifier for this person</td>
 <td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>_created</strong></td>
+<td>Date this Person&#39;s record was first created</td>
+<td>string as ISO8601 Date</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>_updated</strong></td>
+<td>Date this Person&#39;s record was last updated</td>
+<td>string as ISO8601 Date</td>
 <td></td>
 </tr>
 <tr>
@@ -420,33 +478,21 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <td></td>
 </tr>
 <tr>
-<td>first</td>
+<td>name.first</td>
 <td>Person&#39;s first name</td>
 <td>string</td>
 <td></td>
 </tr>
 <tr>
-<td>last</td>
+<td>name.last</td>
 <td>Person&#39;s last name</td>
 <td>string</td>
 <td></td>
 </tr>
 <tr>
-<td><strong>creationDate</strong></td>
-<td>Date this Person&#39;s record was first created</td>
-<td>string as ISO8601 Date</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>updateDate</strong></td>
-<td>Date this Person&#39;s record was last updated</td>
-<td>string as ISO8601 Date</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>address</strong></td>
+<td><strong>addresses</strong></td>
 <td>Array of objects containing address records</td>
-<td>array</td>
+<td>Array</td>
 <td>object</td>
 </tr>
 <tr>
@@ -471,13 +517,13 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <td>address.addr1</td>
 <td>First line of address</td>
 <td>string</td>
-<td>181 York St</td>
+<td>68 Jay St</td>
 </tr>
 <tr>
 <td>address.addr2</td>
 <td>Second line of address</td>
 <td>string</td>
-<td>Suite 5B</td>
+<td>Suite 503</td>
 </tr>
 <tr>
 <td>address.city</td>
@@ -511,7 +557,7 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 </tr>
 <tr>
 <td>facebook.identityToken</td>
-<td>Token saved if user has authenticated with the Alumni Spaces Facebook App. <strong>Note:</strong>  Not returned to public apps.</td>
+<td>Token saved if user has authenticated with the Alumni Spaces Facebook App.  Internal use only, not returnable.</td>
 <td>string</td>
 <td></td>
 </tr>
@@ -523,13 +569,13 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 </tr>
 <tr>
 <td>facebook.ID</td>
-<td>Unique numerical id for facebook profile</td>
+<td>Unique numerical id for Facebook profile</td>
 <td>number</td>
 <td></td>
 </tr>
 <tr>
 <td><strong>twitter</strong></td>
-<td>Object containing twitter profile data</td>
+<td>Object containing Twitter profile data</td>
 <td>object</td>
 <td></td>
 </tr>
@@ -552,9 +598,9 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <td>andrew.cafourek</td>
 </tr>
 <tr>
-<td><strong>email</strong></td>
+<td><strong>emails</strong></td>
 <td>Array of objects containing email data</td>
-<td>array</td>
+<td>Array</td>
 <td></td>
 </tr>
 <tr>
@@ -570,9 +616,9 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <td>andrew@gmail.com</td>
 </tr>
 <tr>
-<td><strong>phone</strong></td>
+<td><strong>phones</strong></td>
 <td>Array of objects containing phone numbers</td>
-<td>array</td>
+<td>Array</td>
 <td></td>
 </tr>
 <tr>
@@ -600,9 +646,9 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <td>skype:&quot;acafourek&quot;</td>
 </tr>
 <tr>
-<td><strong>organization</strong></td>
+<td><strong>organizations</strong></td>
 <td>Array of objects representing employment, volunteer or involvement history</td>
-<td>array</td>
+<td>Array</td>
 <td></td>
 </tr>
 <tr>
@@ -614,7 +660,7 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <tr>
 <td>organization.orgType</td>
 <td>Category of affiliation with this organization. Could be multiple values</td>
-<td>array</td>
+<td>Array</td>
 <td>Employer,Volunteer</td>
 </tr>
 <tr>
@@ -638,7 +684,7 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <tr>
 <td>organization.prevTitles</td>
 <td>Titles that have previously been assigned to the organization.title value</td>
-<td>array</td>
+<td>Array</td>
 <td>Jr. Javascript Developer, Sr. Technical Manager, Director of Engineering</td>
 </tr>
 <tr>
@@ -679,7 +725,7 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 </tr>
 <tr>
 <td><strong>gender</strong></td>
-<td>Person&#39;s gender</td>
+<td>Person&#39;s identified gender</td>
 <td>String</td>
 <td></td>
 </tr>
@@ -689,12 +735,24 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <td>String</td>
 <td></td>
 </tr>
+<tr>
+<td><strong>contentIDs</strong></td>
+<td>Array of strings- if a Person creates a Transaction via Alumni.Fund, the contentID affiliated with that Alumni.Fund flow is saved here.</td>
+<td>Array</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>asSiteIDs</strong></td>
+<td>Array of strings- if a Person creates a Transaction via Alumni.Fund, the recipient group&#39;s unique ID is added to this Array</td>
+<td>Array</td>
+<td></td>
+</tr>
 </tbody></table>
 <h2 id='get-a-person'>Get a Person</h2>
-<p>You can fetch the record of an individual by using a <code>GET</code> request accompanied by the user&#39;s id number.</p>
-<h3 id='http-request'>HTTP Request</h3>
+<p>You can fetch the record of an individual by using a <code>GET</code> request accompanied by the Person&#39;s id number.</p>
+<h3 id='http-request-for-person'>HTTP Request for Person</h3>
 <p><code>GET https://vault.alumnispaces.com/person/{id}</code></p>
-<h3 id='url-parameters'>URL Parameters</h3>
+<h3 id='url-parameters-for-person'>URL Parameters for Person</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -707,19 +765,19 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 </tr>
 </tbody></table>
 <h2 id='create-a-person'>Create a Person</h2>
-<p>Creating a person simply requires making a POST to the /person endpoint with JSON-formatted profile data. When successfully created, an ID is returned.</p>
-
-<aside class="notice">
-When POSTing, make sure you have set the `Content-Type` header to `application/json`
-</aside>
-
 <blockquote>
 <p>Response when creating a Person</p>
 </blockquote>
 <pre class="highlight plaintext"><code>    {
       "_id": "5653b26dd75eafac08185b3e"
     }
-</code></pre><h1 id='transactions'>Transactions</h1>
+</code></pre>
+<p>Creating a person simply requires making a POST to the /person endpoint with JSON-formatted profile data. When successfully created, an ID is returned.</p>
+
+<aside class="notice">
+When POSTing, make sure you have set the `Content-Type` header to `application/json`
+</aside>
+<h1 id='transactions'>Transactions</h1>
 <blockquote>
 <p>Example Transaction Record</p>
 </blockquote>
@@ -756,8 +814,8 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
             }
         ],
         "receipt": {
-            "to": "cafourek@gmail.com",
-            "emailID": "log_66c55cd19a8276a60afde4119b2fd34c-3",
+            "to": "tlannister@meereen.govv",
+            "emailID": "log_66c55cd19as38276a60afde4119b2fd34c-3",
             "emailService": "Sendwithus",
             "sent": true,
             "_updated": "2016-11-29T19:07:16.221Z"
@@ -767,16 +825,42 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
                 "_updated": "2016-11-29T19:07:02.905Z",
                 "key": "braintree",
                 "value": "hdrqf3zg",
-                "_id": "583dd1d6daaab713f8a7a4d9"
+                "_id": "583dd1daggwqq13f8a2512d9"
+            }
+        ],
+        "extra_fields": [
+            {
+                "value": "2007",
+                "label": "Year of graduation",
+                "field_type": "text",
+                "id": "year_of_graduation",
+                "_updated": "2017-08-10T16:08:39.574Z",
+                "_id": "598c85071d18fa6948f21afa"
+            },
+            {
+                "value": "english",
+                "label": "Major",
+                "field_type": "text",
+                "id": "major",
+                "_updated": "2017-08-10T16:08:39.574Z",
+                "_id": "598c85071d18fa6948f21af9"
+            },
+            {
+                "value": "1234556",
+                "label": "Member ID",
+                "field_type": "text",
+                "id": "member_id",
+                "_updated": "2017-08-10T16:08:39.574Z",
+                "_id": "598c85071d18fa6948f21af8"
             }
         ]
     }
 </code></pre>
-<p>A <code>transaction</code> is a base object in the Alumni.Fund Vault API which describes the attributes of a particular exchange of financial information that has transpired in a 3rd party system.</p>
+<p>A <code>transaction</code> is a base object in the Alumni.Fund Vault API which describes a financial exchange within a 3rd party system.</p>
 
 <p><img src="https://files.readme.io/BFROEvGKSOm3iABjxNfg_transaction.jpg" alt="Buying stuff" /></p>
 <h3 id='what-a-transaction-is-not'>What a transaction is not</h3>
-<p>Note that this object and its associated methods are for logging and recording, there are no methods to support the actual completion of a financial transaction.  All records are inbound via direct calls or created by webhook. </p>
+<p>Note that this object and its associated methods are for logging and recording, there are no methods to support the actual completion of a financial transaction.  POST actions add <code>Transaction</code> records, they do not initiate actual Transactions.</p>
 
 <p>Transactions have the following attributes (<strong>bold</strong> indicates top level object element)</p>
 
@@ -789,10 +873,22 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 </tr>
 </thead><tbody>
 <tr>
-<td><strong>id</strong></td>
+<td><strong>_id</strong></td>
 <td>Unique identifier for this transaction</td>
 <td>string</td>
 <td>&quot;1234ABCD&quot;</td>
+</tr>
+<tr>
+<td><strong>_created</strong></td>
+<td>Date this Transaction&#39;s record was first created</td>
+<td>string as ISO8601 Date</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>_updated</strong></td>
+<td>Date this Transaction&#39;s record was last updated</td>
+<td>string as ISO8601 Date</td>
+<td></td>
 </tr>
 <tr>
 <td><strong>type</strong></td>
@@ -813,16 +909,10 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 <td>USD,GBP</td>
 </tr>
 <tr>
-<td><strong>channel</strong></td>
-<td>Channel through which payment was made</td>
-<td>string</td>
-<td>Braintree,Venmo,Square</td>
-</tr>
-<tr>
 <td><strong>method</strong></td>
 <td>Payment method used</td>
 <td>string</td>
-<td>Credit card, Venmo, Check</td>
+<td>credit_card, Venmo, Check</td>
 </tr>
 <tr>
 <td><strong>physical</strong></td>
@@ -838,38 +928,14 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 </tr>
 <tr>
 <td><strong>person</strong></td>
-<td>Unique ID of person created by or mapped to this transaction (see /people/:id method)</td>
+<td>Unique ID of person created by or mapped to this transaction (see <a href="#get-a-person">/people/:id method</a>)</td>
 <td>string</td>
 <td>1234</td>
 </tr>
 <tr>
 <td><strong>external</strong></td>
-<td>Object containing external IDs affiliated with this transaction. Keys are TBD based on future integrations</td>
+<td>Object containing external data objects affiliated with this transaction, allowing us to map data between transaction systems</td>
 <td>object</td>
-<td></td>
-</tr>
-<tr>
-<td>external.braintree</td>
-<td>Braintree transaction ID</td>
-<td>string</td>
-<td>1234</td>
-</tr>
-<tr>
-<td>external.shopify</td>
-<td>Shopify transaction ID</td>
-<td>string</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>createdDate</strong></td>
-<td>ISO 8601 timestamp for when record was created</td>
-<td>string</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>modifiedDate</strong></td>
-<td>ISO 8601 timestamp for when record was last altered. Should be updated with each write operation</td>
-<td>string</td>
 <td></td>
 </tr>
 <tr>
@@ -889,12 +955,6 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 <td>Client ID for intended recipient of funds</td>
 <td>string</td>
 <td>testnetwork_93</td>
-</tr>
-<tr>
-<td><strong>taxed</strong></td>
-<td>Boolean indicator where false indicates tax exempt status</td>
-<td>boolean</td>
-<td>true/false</td>
 </tr>
 <tr>
 <td><strong>receipt</strong></td>
@@ -919,6 +979,12 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 <td>Email address where receipt is to be sent</td>
 <td>string</td>
 <td>tester@gmail.com</td>
+</tr>
+<tr>
+<td>receipt.service</td>
+<td>Provider used to deliver receipt</td>
+<td>string</td>
+<td>Sendwithus</td>
 </tr>
 <tr>
 <td><strong>source</strong></td>
@@ -957,6 +1023,12 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 <td>testnetwork_93_18</td>
 </tr>
 <tr>
+<td><strong>asSiteID</strong></td>
+<td>Alumni Spaces Group ID affiliated with this transaction</td>
+<td>string</td>
+<td>testnetwork_93</td>
+</tr>
+<tr>
 <td><strong>status</strong></td>
 <td>Some payment methods are not completed right away and a transaction is not considered funded and complete until status = settled</td>
 <td>string</td>
@@ -965,8 +1037,56 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 <tr>
 <td><strong>note</strong></td>
 <td>Array field of text notes that may be affiliated with transaction</td>
-<td>array</td>
+<td>Array</td>
 <td></td>
+</tr>
+<tr>
+<td><strong>items</strong></td>
+<td>Array of objects describing what &quot;product&quot; was purchased in this flow. Alumni.Fund will show $5,$10,$20, etc by default but this may be customized by group or network.</td>
+<td>Array</td>
+<td></td>
+</tr>
+<tr>
+<td>item.label</td>
+<td>Group or network-provided text label for the product purchased.  If not present, there were no custom products defined and the Person selected an Alumni.Fund default of $5, $10, $20, etc. (as described in the <code>value</code> property)</td>
+<td>String</td>
+<td>Membership</td>
+</tr>
+<tr>
+<td>item.price</td>
+<td>If custom product was purchased, it&#39;s sale price is saved here. Should be the same as the <code>value</code> property</td>
+<td>Number</td>
+<td>85</td>
+</tr>
+<tr>
+<td><strong>extra_fields</strong></td>
+<td>Array of objects describing additional fields added to the Alumni.Fund flow by the group or network. This is currently limited to 3 fields.</td>
+<td>Array</td>
+<td></td>
+</tr>
+<tr>
+<td>extra_field.id</td>
+<td>Programmatically-created &quot;unique&quot; identifier for this field. Simple strip/replace of the <code>item.label</code> to remove non-alphanumerics and replace spaces with underscores. Note: this will not have an underscore prefix. There is likely to be an auto-generated <code>_id</code> in this object as well</td>
+<td>String</td>
+<td>year_of_graduation</td>
+</tr>
+<tr>
+<td>extra_field.label</td>
+<td>Group or network-provided label for this field</td>
+<td>Text</td>
+<td>Year of Graduation</td>
+</tr>
+<tr>
+<td>extra_field.field_type</td>
+<td>Field type. Currently, extra fields may be <code>checkbox</code>, <code>dropdown</code> or <code>text</code></td>
+<td>String</td>
+<td>&quot;text&quot;</td>
+</tr>
+<tr>
+<td>extra_field.value</td>
+<td>Person-supplied value for this field.</td>
+<td>String</td>
+<td>&quot;Summer 2007&quot;</td>
 </tr>
 </tbody></table>
 <h2 id='get-a-transaction'>Get a Transaction</h2>
@@ -976,59 +1096,9 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 <p>Fetch transaction ID <code>58d7d9187200bc2fbbff77f1</code></p>
 </blockquote>
 <pre class="highlight plaintext"><code>GET https://vault.alumnispaces.com/transaction/58d7d9187200bc2fbbff77f1
-</code></pre>
-<blockquote>
-<p>Returns</p>
-</blockquote>
-<pre class="highlight plaintext"><code>{
-    "_id": "58d7d9187200bc2fbbff77f1",
-    "_created": "2017-03-26T15:07:04.808Z",
-    "_updated": "2017-03-26T15:07:22.366Z",
-    "_method_updated": "2017-03-26T15:07:04.808Z",
-    "_contentID_updated": "2017-03-26T15:07:04.808Z",
-    "_asSiteID_updated": "2017-03-26T15:07:04.808Z",
-    "_status_updated": "2017-03-26T15:07:04.808Z",
-    "_taxed_updated": "2017-03-26T15:07:04.808Z",
-    "_currency_updated": "2017-03-26T15:07:04.808Z",
-    "_value_updated": "2017-03-26T15:07:04.808Z",
-    "value": 5,
-    "currency": "USD",
-    "transDate": "2017-03-26T15:07:04.000Z",
-    "person": "58d7d9187200bc2fbbff77ef",
-    "taxed": true,
-    "status": "pending",
-    "asSiteID": "littlestate_30",
-    "contentID": "littlestate_30_25",
-    "method": "credit_card",
-    "__v": 0,
-    "note": [
-        "I have a comment!"
-    ],
-    "items": [
-        {
-            "_updated": "2017-03-26T15:07:04.808Z",
-            "_id": "58d7d9187200bc2fbbff77f3"
-        }
-    ],
-    "receipt": {
-        "to": "cafourek@gmail.com",
-        "emailID": "log_ce4626ff55eb95830039930b67206b6f-3",
-        "emailService": "Sendwithus",
-        "sent": true,
-        "_updated": "2017-03-26T15:07:22.366Z"
-    },
-    "external": [
-        {
-            "_updated": "2017-03-26T15:07:04.808Z",
-            "key": "braintree",
-            "value": "4pth679m",
-            "_id": "58d7d9187200bc2fbbff77f2"
-        }
-    ]
-}
-</code></pre><h3 id='http-request'>HTTP Request</h3>
+</code></pre><h3 id='http-request-for-transaction'>HTTP Request for Transaction</h3>
 <p><code>GET https://vault.alumnispaces.com/transaction/{id}</code></p>
-<h3 id='url-parameters'>URL Parameters</h3>
+<h3 id='url-parameters-for-transaction'>URL Parameters for Transaction</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1041,12 +1111,6 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 </tr>
 </tbody></table>
 <h2 id='create-a-transaction'>Create a Transaction</h2>
-<p>Creating a transaction simply requires making a POST to the /transaction endpoint with JSON-formatted data. When successfully created, an ID is returned.</p>
-
-<aside class="notice">
-When POSTing, make sure you have set the `Content-Type` header to `application/json`
-</aside>
-
 <blockquote>
 <p>Response when creating a Transaction</p>
 </blockquote>
@@ -1054,13 +1118,235 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
       "_id": "58d7d9187200bc2fbbff77f1"
     }
 </code></pre>
+<p>Creating a transaction simply requires making a POST to the /transaction endpoint with JSON-ready data passed as parameters. When successfully created, a <code>Transaction</code> ID is returned.</p>
+<h2 id='update-a-transaction'>Update a Transaction</h2>
+<p>Updating a transaction simply requires making a PUT request to the /transaction endpoint with JSON-ready data passed as parameters. When successfully updated, the full, updated <code>Transaction</code> record is returned.</p>
+
+<aside class="notice">
+When POSTing or PUTing, make sure you have set the `Content-Type` header to `application/json`
+</aside>
+<h2 id='querying-transactions'>Querying Transactions</h2>
+<blockquote>
+<p>Example request combining Order and Grouping parameters (records truncated for readability)</p>
+</blockquote>
+<pre class="highlight plaintext"><code>GET https://vault.alumnispaces.com/transaction/query?order=DESC&amp;order_by=value&amp;group_by=asSiteID
+</code></pre><pre class="highlight plaintext"><code>{
+  "bigstate_19": [
+      {
+        "_id": "596453247e9213434132811",
+        "_created": "2017-07-11T02:26:15.715Z",
+        "value": 900
+      },
+      {
+        "_id": "593252247e92233434132231",
+        "_created": "2017-07-11T14:55:09.769Z",
+        "value": 800
+      },
+      {
+        "_id": "131252247e9223343098021",
+        "_created": "2016-06-12T14:12:08.121Z",
+        "value": 500
+      },
+  ],
+  "bigstate_37": [
+      {
+        "_id": "324237e92134341332523",
+        "_created": "2013-09-04T02:26:15.715Z",
+        "value": 100
+      },
+      {
+        "_id": "080252247e9223343877",
+        "_created": "2015-11-25T14:55:09.769Z",
+        "value": 75
+      },
+      {
+        "_id": "566247e92233430780082",
+        "_created": "2016-06-12T14:12:08.121Z",
+        "value": 50
+      },
+  ],
+}
+</code></pre>
+<p>The Vault supports a number of query parameters that can make it easier to fetch and handle data in meaningful ways. All queries are a part of the <code>/transaction/query/</code> endpoint and depend on additional query parameters.</p>
+<h3 id='return-grouping-and-ordering'>Return Grouping and Ordering</h3>
+<p>You may request that the <code>Transaction</code> records be returned in specific groups, orders or ask us to do some math before sending it back to you.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>order</code></td>
+<td>Change the order of the returned data. Must be used with <code>order_by</code></td>
+<td><code>ASC</code> (default), <code>DESC</code></td>
+</tr>
+<tr>
+<td><code>order_by</code></td>
+<td>The field that <code>order</code> should be based upon. Will work with any first-level field based on alphabetic or numerical order. (Date fields will inherently work in alpha/numeric ordering since they are in ISO format)</td>
+<td><code>value</code>, <code>transDate</code>, <code>_updated</code></td>
+</tr>
+<tr>
+<td><code>group_by</code></td>
+<td>Group records based on a shared property value. The <code>group_by</code> value will become the parent to the transaction records contain within it (see example JSON)  Supports <code>person</code>, <code>status</code>, <code>taxed</code>, <code>contentID</code>,or <code>asSiteID</code></td>
+<td><code>asSiteID</code> will return records within parent objects such as <code>littlestate_39</code> and <code>oklahoma_123</code></td>
+</tr>
+</tbody></table>
+
+<p><br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br /></p>
+<h3 id='return-aggregate-math'>Return Aggregate Math</h3>
+<blockquote>
+<p>Example of aggregation math</p>
+</blockquote>
+<pre class="highlight plaintext"><code>This request says to aggregate by asSiteID and return the sum of the "value" fields within those asSiteIDs
+GET https://vault.alumnispaces.com/transaction/query?aggregate_by=asSiteID&amp;aggregate_sum=value
+</code></pre><pre class="highlight plaintext"><code>[
+    {
+        "_id": "bigstate_39",
+        "_count": 6,
+        "value_sum": 185
+    },
+    {
+        "_id": "bigstate_38",
+        "_count": 1,
+        "value_sum": 20
+    },
+    {
+        "_id": "bigstate_21",
+        "_count": 6,
+        "value_sum": 120
+    },
+    {
+        "_id": "bigstate_18",
+        "_count": 1,
+        "value_sum": 10
+    }
+]
+</code></pre>
+<p>You may also want to quickly determine &quot;What is the total value of all transactions per group?&quot; or &quot;What is the most recent transaction date?&quot;. To help with this, Vault provides aggregate math parameters.</p>
+
+<p>Aggregation parameters work with <code>order</code> and <code>order_by</code> query parameters but will not work when combined with <a href="#return-filtering">Return Filtering</a> parameters.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>aggregate_by</code></td>
+<td>Requesting aggregate data will not return any <code>Transaction</code> records. Instead, you&#39;ll get grouped math summaries of the data within those records. This parameter is very similar to <code>group_by</code>  and accepts the same options as <code>group_by</code>. Requires <code>aggregate_{method}</code> parameter.</td>
+<td>(See code example)</td>
+</tr>
+<tr>
+<td><code>aggregate_{method}</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>This parameter uses both the key and value to determine your request. {method} may be <code>sum</code>, <code>avg</code>, <code>min</code> or <code>max</code> while the parameter&#39;s value should be a <code>Transaction</code> property.</td>
+<td><code>aggregate_sum=value</code>, <code>aggregate_min=transDate</code></td>
+</tr>
+</tbody></table>
+<h3 id='aggregation-request-examples'>Aggregation Request Examples</h3>
+<table><thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead><tbody>
+<tr>
+<td>When was the most recent transaction for each group?</td>
+<td><code>/transaction/query?aggregate_by=asSiteID&amp;aggregate_max=transDate</code></td>
+</tr>
+<tr>
+<td>What is the average payment value for a particular event?</td>
+<td><code>/transaction/query?aggregate_by=contentID&amp;aggregate_avg=value</code></td>
+</tr>
+<tr>
+<td>What is the average payment value for a particular event?</td>
+<td><code>/transaction/query?aggregate_by=contentID&amp;aggregate_avg=value</code></td>
+</tr>
+<tr>
+<td>What is the total value of all transactions still pending settlement?</td>
+<td><code>/transaction/query?aggregate_by=status&amp;aggregate_sum=value</code></td>
+</tr>
+</tbody></table>
+
+<p><br />
+<br />
+<br />
+<br />
+<br /></p>
+<h3 id='return-filtering'>Return Filtering</h3>
+<p>You may also request records based on field value or transaction data (<code>transDate</code>).  Returned data will be in the same format as expected from a vanilla <code>/transaction</code> or <code>group_by</code> request.</p>
+
+<p>These filter options may be combined with <code>order</code>, <code>order_by</code> and <code>group_by</code> parameters to customize return format.</p>
+<h3 id='date-ranges'>Date Ranges</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>transDate_start</code></td>
+<td>Only return transactions that occurred after this date. Format YYY-MM-DD.</td>
+<td><code>transDate_start=2017-06-01</code></td>
+</tr>
+<tr>
+<td><code>transDate_end</code></td>
+<td>Only return transactions that occurred before this date. Format YYY-MM-DD.</td>
+<td><code>transDate_end=2017-08-10</code></td>
+</tr>
+</tbody></table>
+
+<p>You may use <code>transDate_start</code> and <code>transDate_end</code> to create a range. Ranges are only inclusive of the start date: requesting June 1 - August 10 means you&#39;re asking for data from 12:01AM on June 1 through 11:59PM on August 9.</p>
+<h3 id='field-filter'>Field Filter</h3>
+<p>You may also add a parameter to limit by any field value by simply using <code>{field}: {value}</code></p>
+
+<p>Examples:</p>
+
+<table><thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Get all transactions for specific group</td>
+<td><code>/transaction/query?contentID=bigstate_38_268</code></td>
+</tr>
+<tr>
+<td>Get all transactions where <code>disbursement.complete</code> is true. Also demonstrates targeting nested fields in queries</td>
+<td><code>/transaction/query?disbursement.complete=true</code></td>
+</tr>
+<tr>
+<td>Get all transactions for specific <code>Person</code> ID</td>
+<td><code>/transaction/query?person=58e7f3252192134341749143347c3</code></td>
+</tr>
+</tbody></table>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">
-                <a href="#" data-language-name="shell">shell</a>
-                <a href="#" data-language-name="php">php</a>
-                <a href="#" data-language-name="python">python</a>
-                <a href="#" data-language-name="javascript">javascript</a>
+                <a href="#" data-language-name="json">json</a>
           </div>
       </div>
     </div>
