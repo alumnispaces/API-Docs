@@ -135,7 +135,7 @@ linkedin.username | Unique username on LinkedIn | string | andrew.cafourek
 email.label | Text label for email field | string | Personal
 email.address | Email address | string | andrew@gmail.com
 **phones** | Array of objects containing phone numbers | Array
-phone.label | Text label for email field | string | Cell
+phone.label | Text label for phone field | string | Cell
 phone.number | Phone number, stripped of non numeric characters | string (intentionally left as string instead of number)
 **externalIDs** | Array of objects containing ID values for 3rd party services. Objects follow standard key/value format but could have custom attributes added. | Array
 external.:serviceid: | Contains string with ID for external service. Service is known by the key, standardization of 3rd party services will be available later. | object | skype:"acafourek"

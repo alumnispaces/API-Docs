@@ -124,7 +124,7 @@ Transactions have the following attributes (**bold** indicates top level object 
 | item.price | If custom product was purchased, it's sale price is saved here. Should be the same as the `value` property | Number | 85
 | **extra_fields** | Array of objects describing additional fields added to the Alumni.Fund flow by the group or network. This is currently limited to 3 fields. | Array |
 | extra_field.id | Programmatically-created "unique" identifier for this field. Simple strip/replace of the `item.label` to remove non-alphanumerics and replace spaces with underscores. Note: this will not have an underscore prefix. There is likely to be an auto-generated `_id` in this object as well | String | year_of_graduation |
-| extra_field.label | Group or network-provided label for this field | Text | Year of Graduation |
+| extra_field.label | Group or network-provided label for this field | String | Year of Graduation |
 | extra_field.field_type | Field type. Currently, extra fields may be `checkbox`, `dropdown` or `text` | String | "text" |
 | extra_field.value | Person-supplied value for this field. | String | "Summer 2007"
 
