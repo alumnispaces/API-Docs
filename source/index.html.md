@@ -24,6 +24,10 @@ Alumni Spaces maintains two public APIs:
 
 At the moment, only vaultAPI is documented.  If you need access to contentAPI, please let us know.
 
+The production URL for API access is `https://vault.alumnispaces.com`
+
+For testing purposes, you may also use `https://vault-dev.alumnispaces.com`
+
 ## Authentication
 
 To access any Alumni.Fund data, you'll first need to get two things from our team.
