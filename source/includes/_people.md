@@ -171,6 +171,14 @@ Parameter | Description
 --------- | -----------
 ID | The ID of the Person to retrieve
 
+## Get All People
+
+You can fetch a full list of all people by using a `GET` request to the `/person` endpoint.
+
+### HTTP Request for Person
+
+`GET https://vault.alumnispaces.com/person/`
+
 ## Create a Person
 
 > Response when creating a Person
