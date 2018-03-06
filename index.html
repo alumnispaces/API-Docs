@@ -509,6 +509,12 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 <td>&quot;Home&quot;, &quot;Office&quot;,&quot;Summer home&quot;</td>
 </tr>
 <tr>
+<td>address.company</td>
+<td>Company name for business address</td>
+<td>string</td>
+<td>&quot;ACME, Inc&quot;</td>
+</tr>
+<tr>
 <td>address.validStart</td>
 <td>Beginning of date range for which this is/was a valid address</td>
 <td>string as ISO8601 Date</td>
@@ -666,9 +672,9 @@ API Keys are limited by scope and verb permissions. Your key will be limited in 
 </tr>
 <tr>
 <td>organization.orgType</td>
-<td>Category of affiliation with this organization. Could be multiple values</td>
-<td>Array</td>
-<td>Employer,Volunteer</td>
+<td>Category of affiliation with this organization.</td>
+<td>string</td>
+<td>Governmental</td>
 </tr>
 <tr>
 <td>organization.startDate</td>
@@ -808,10 +814,14 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
         "transDate": "2016-11-29T19:07:02.000Z",
         "person": "583dd1d6dagbe323522",
         "taxed": true,
-        "status": "disbursed",
+        "status": "settled",
         "asSiteID": "oklahoma_23",
         "contentID": "oklahoma_23_223",
+
         "method": "credit_card",
+        "disbursement" : {
+            "complete" : true
+        },
         "__v": 0,
         "note": [
             "Notes go in this space!"
@@ -963,15 +973,9 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 </tr>
 <tr>
 <td>disbursement.complete</td>
-<td>Indicator for whether funds have been paid out to recipient for this transaction</td>
+<td>Indicator for whether funds from this transaction have been paid out to client by Alumni Spaces.</td>
 <td>boolean</td>
 <td>true/false</td>
-</tr>
-<tr>
-<td>disbursement.recipient</td>
-<td>Client ID for intended recipient of funds</td>
-<td>string</td>
-<td>testnetwork_93</td>
 </tr>
 <tr>
 <td><strong>receipt</strong></td>
@@ -1049,7 +1053,7 @@ When POSTing, make sure you have set the `Content-Type` header to `application/j
 <td><strong>status</strong></td>
 <td>Some payment methods are not completed right away and a transaction is not considered funded and complete until status = settled</td>
 <td>string</td>
-<td>pending/failed/settled</td>
+<td>pending/failed/settled/refunded</td>
 </tr>
 <tr>
 <td><strong>note</strong></td>
