@@ -19,10 +19,14 @@
         "transDate": "2016-11-29T19:07:02.000Z",
         "person": "583dd1d6dagbe323522",
         "taxed": true,
-        "status": "disbursed",
+        "status": "settled",
         "asSiteID": "oklahoma_23",
         "contentID": "oklahoma_23_223",
+        
         "method": "credit_card",
+        "disbursement" : {
+            "complete" : true
+        },
         "__v": 0,
         "note": [
             "Notes go in this space!"
@@ -101,10 +105,10 @@ Transactions have the following attributes (**bold** indicates top level object 
 | **physical** | Was transaction completed in-person? | boolean | true/false |
 | **transDate** | ISO 8601 date of transaction timestamp | string | 2015-07-05T22:16:18+00:00 |
 | **person** | Unique ID of person created by or mapped to this transaction (see [/people/:id method](#get-a-person)) | string | 1234 |
+| **taxed** | Was tax charged on this transaction?  | boolean | true/false |
 | **external** | Object containing external data objects affiliated with this transaction, allowing us to map data between transaction systems | object |
 | **disbursement** | Object containing data about payout of the funds associated with this transaction | object |   |
-| disbursement.complete | Indicator for whether funds have been paid out to recipient for this transaction | boolean | true/false |
-| disbursement.recipient | Client ID for intended recipient of funds | string | testnetwork_93 |
+| disbursement.complete | Indicator for whether funds from this transaction have been paid out to client by Alumni Spaces. | boolean | true/false |
 | **receipt** | Object containing information about customer notification | object |
 | receipt.sent | Boolean indicator for receipt sent status | boolean | true/false |
 | receipt.emailID | External mail service ID of receipt email. Mandrill ID, etc | string |
@@ -117,7 +121,7 @@ Transactions have the following attributes (**bold** indicates top level object 
 | source.id | ID code used in campaign | string | 12345 |
 | **contentID** | Alumni Spaces Content ID affiliated with this transaction | string | testnetwork_93_18 |
 | **asSiteID** | Alumni Spaces Group ID affiliated with this transaction | string | testnetwork_93 |
-| **status** | Some payment methods are not completed right away and a transaction is not considered funded and complete until status = settled | string | pending/failed/settled |
+| **status** | Some payment methods are not completed right away and a transaction is not considered funded and complete until status = settled | string | pending/failed/settled/refunded |
 | **note** | Array field of text notes that may be affiliated with transaction | Array |
 | **items** | Array of objects describing what "product" was purchased in this flow. Alumni.Fund will show $5,$10,$20, etc by default but this may be customized by group or network. | Array |
 | item.label | Group or network-provided text label for the product purchased.  If not present, there were no custom products defined and the Person selected an Alumni.Fund default of $5, $10, $20, etc. (as described in the `value` property)  | String | Membership |

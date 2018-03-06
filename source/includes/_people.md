@@ -115,6 +115,7 @@ name.first | Person's first name | string |
 name.last | Person's last name | string |
 **addresses** | Array of objects containing address records | Array|object |
 address.label | Text label for this address record | string | "Home", "Office","Summer home"
+address.company | Company name for business address | string | "ACME, Inc"
 address.validStart | Beginning of date range for which this is/was a valid address | string as ISO8601 Date
 address.validEnd | End of date range for which this is/was a valid address | string as ISO8601 Date
 address.addr1 | First line of address | string | 68 Jay St
@@ -141,7 +142,7 @@ phone.number | Phone number, stripped of non numeric characters | string (intent
 external.:serviceid: | Contains string with ID for external service. Service is known by the key, standardization of 3rd party services will be available later. | object | skype:"acafourek"
 **organizations** | Array of objects representing employment, volunteer or involvement history | Array
 organization.name | Text name of company/organization | string | Alumni Spaces
-organization.orgType | Category of affiliation with this organization. Could be multiple values | Array | Employer,Volunteer
+organization.orgType | Category of affiliation with this organization. | string | Governmental
 organization.startDate | ISO 8601 date of beginning of affiliation | string
 organization.endDate | ISO 8601 date of end of affiliation | string
 organization.title | Applicable title to describe this person's role in the organization | string | Chief Technical Officer
